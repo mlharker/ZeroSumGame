@@ -1,12 +1,14 @@
 package core_algorithms;
 
+import problems.Game;
+
 public class MiniMax <S, A> {
     private Game<S,A> game;
 
     public record Best<A>(int value, A action){};
     private final boolean pruning;
 
-    public MiniMax(Game<S,A>, game, boolean pruning){
+    public MiniMax(Game<S,A> game, boolean pruning){
         this.game = game;
         this.pruning = pruning;
     }
