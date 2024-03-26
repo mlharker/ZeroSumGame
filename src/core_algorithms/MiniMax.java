@@ -3,10 +3,10 @@ package core_algorithms;
 import problems.Game;
 
 public class MiniMax <S, A> {
-    private Game<S,A> game;
+    public Game<S,A> game;
 
     public record Best<A>(int value, A action){};
-    private final boolean pruning;
+    public final boolean pruning;
 
     public MiniMax(Game<S,A> game, boolean pruning){
         this.game = game;
@@ -55,4 +55,10 @@ public class MiniMax <S, A> {
         }
         return new Best<>(minValue, minAction);
     }
+
+    public Game<S, A> getGame()
+    {
+        return this.game;
+    }
+
 }

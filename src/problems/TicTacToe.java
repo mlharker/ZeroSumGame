@@ -16,6 +16,7 @@ public class TicTacToe implements Game<char[][], int[]>{
         this.BOARD_SIZE = size;
         this.board = new char[size][size];
         this.marked = new boolean[size][size];
+        this.turn = turn;
         for (int row=0; row<size; row++){
             for(int col=0; col<size; col++){
                 board[row][col] = ' ';
@@ -186,7 +187,7 @@ public class TicTacToe implements Game<char[][], int[]>{
         {
             for(int col=0; col<BOARD_SIZE; col++)
             {
-                if(marked[row][col])
+                if(!marked[row][col])
                 {
                     int[] position = new int[2];
                     position[0] = row;
@@ -198,6 +199,11 @@ public class TicTacToe implements Game<char[][], int[]>{
 
         return results;
 
+    }
+
+    public char[][] getBoard()
+    {
+        return this.board;
     }
 
 }

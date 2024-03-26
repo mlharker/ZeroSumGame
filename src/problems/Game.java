@@ -10,4 +10,5 @@ public interface Game <S, A>{
     S execute(A action, S state);
     S undo(A action, S state);
 
+    S getBoard();
 }
