@@ -14,43 +14,55 @@ public class MiniMax <S, A> {
     }
 
     public A minimaxSearch(S state){
-        Best<A> max = maxValue(state);
+        Best<A> max = maxValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE);
         return max.action();
     }
 
-    public Best<A> maxValue(S state){
+    public Best<A> maxValue(S state, int alpha, int beta){
         int maxValue = Integer.MIN_VALUE;
         A maxAction = null;
         if(game.isTerminal(state)) {
             maxValue = game.utility(state);
         }else{
-            for(A action : game.actions(state)){
+            for(A action : game.actions(state))
+            {
                 S newState = game.execute(action, state);
-                Best<A> min = minValue(newState);
-                if (min.value() > maxValue){
+                Best<A> min = minValue(newState, alpha, beta);
+                if (min.value() > maxValue)
+                {
                     maxValue = min.value();
                     maxAction = action;
                 }
                 game.undo(action, newState);
+
+                if (pruning && maxValue >= beta)
+                    break;
+                alpha = Math.max(alpha, maxValue);
             }
         }
         return new Best<>(maxValue,maxAction);
     }
 
-    public Best<A> minValue(S state){
+    public Best<A> minValue(S state, int alpha, int beta){
         int minValue = Integer.MAX_VALUE;
         A minAction = null;
-        if(game.isTerminal(state)) {
+        if(game.isTerminal(state))
+        {
             minValue = game.utility(state);
-        }else{
+        }
+        else{
             for(A action : game.actions(state)){
                 S newState = game.execute(action, state);
-                Best<A> max = maxValue(newState);
+                Best<A> max = maxValue(newState, alpha, beta);
                 if(max.value() < minValue){
                     minValue = max.value();
                     minAction = action;
                 }
                 game.undo(action, newState);
+
+                if (pruning && minValue <= alpha)
+                    break;
+                beta = Math.min(beta, minValue);
             }
         }
         return new Best<>(minValue, minAction);

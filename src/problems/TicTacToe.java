@@ -14,11 +14,11 @@ public class TicTacToe implements Game<char[][], int[]>{
 
     public TicTacToe(int size, Marks turn){
         this.BOARD_SIZE = size;
-        this.board = new char[size][size];
-        this.marked = new boolean[size][size];
+        this.board = new char[BOARD_SIZE][BOARD_SIZE];
+        this.marked = new boolean[BOARD_SIZE][BOARD_SIZE];
         this.turn = turn;
-        for (int row=0; row<size; row++){
-            for(int col=0; col<size; col++){
+        for (int row=0; row<BOARD_SIZE; row++){
+            for(int col=0; col<BOARD_SIZE; col++){
                 board[row][col] = ' ';
                 marked[row][col] = false;
             }
@@ -41,11 +41,11 @@ public class TicTacToe implements Game<char[][], int[]>{
             }
 
         }
-
         return true;
     }
 
-    public char[][] execute(int[] position, char[][] board){
+    public char[][] execute(int[] position, char[][] board)
+    {
         if(turn == Marks.X){
             board[position[0]][position[1]] = Marks.X.toString().charAt(0);
         }else{
@@ -173,10 +173,8 @@ public class TicTacToe implements Game<char[][], int[]>{
         {
             return -1;
         }
-        else
-        {
-            return 0;
-        }
+
+        return 0;
     }
 
 
