@@ -41,11 +41,9 @@ namespace DomainModel
 
         }
 
-        public void Update(string name, double lat, double lon)
+        public void Update(string name)
         {
             Name = name;
-            Latitude = lat;
-            Longitude = lon;
         }
     }
 }

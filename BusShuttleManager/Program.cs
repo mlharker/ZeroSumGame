@@ -24,12 +24,10 @@ public class Program
         app.UseStaticFiles();
         app.UseRouting();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-            endpoints.MapDefaultControllerRoute();
-        });
-
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Drivers}/{id?}");
+        
         app.Run();
     }
 

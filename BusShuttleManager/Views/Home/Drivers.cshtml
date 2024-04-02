@@ -27,15 +27,15 @@
     </style>
 
 <div class="navbar">
-    <a href="/">Drivers</a>
-    <a href="/Busses">Busses</a>
-    <a href="/Routes">Routes</a>
-    <a href="/Stops">Stops</a>
-    <a href="/Loops">Loops</a>
+    <a asp-action="Drivers">Drivers</a>
+    <a asp-action="Busses">Busses</a>
+    <a asp-action="Routes">Routes</a>
+    <a asp-action="Stops">Stops</a>
+    <a asp-action="Loops">Loops</a>
 </div>
 
 <h2>Drivers</h2>
-<a href="/CreateDriver">Add new driver</a>
+<a asp-action="CreateDriver">Add new driver</a>
 
 <table class="dataTable">
     <thead>
@@ -52,8 +52,8 @@
                 <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
                 <td>@Html.DisplayFor(modelItem => item.LastName)</td>
                 <td>
-                    <a asp-action="Edit" asp-Routes-id="@item.Id">Edit</a> | 
-                    <a asp-action="Delete" asp-Routes-id="@item.Id">Delete</a>
+                    <a asp-action="UpdateDriver" asp-route-id="@item.Id">Edit</a> | 
+                    <a asp-action="DeleteDriver" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

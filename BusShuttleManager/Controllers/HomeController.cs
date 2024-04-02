@@ -34,59 +34,156 @@ public class HomeController : Controller
         this.loopService = lService;
     }
 
-    [HttpGet("/")]
+    /*DRIVERS*/
     public IActionResult Drivers()
     {
         return View(driverService.getAllDrivers().Select(d => DriverViewModel.FromDriver(d)));
     }
 
-    [HttpGet("/CreateDriver")]
+    public IActionResult UpdateDriver([FromRoute] int id)
+    {
+        var driverEditModel = new EditDriverModel();  
+        var driver = driverService.findDriverById(id);
+ 
+        driverEditModel = EditDriverModel.FromDriver(driver);
+        return View(driverEditModel);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateDriver(int id, [Bind("FirstName,LastName")] EditDriverModel driver)
+    {
+        driverService.UpdateDriverById(id, driver.FirstName, driver.LastName);
+        return RedirectToAction("Drivers");
+    }
+
+
     public IActionResult CreateDriver()
     {
-        var driverCreateModel = CreateDriverModel.NewDriver();
+        var driverCreateModel = CreateDriverModel.NewDriver(driverService.GetAmountOfDrivers());
         return View(driverCreateModel);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult CreateDriver(int id, [Bind("FirstName,LastName")] CreateDriverModel driver)
     {
-        if (ModelState.IsValid)
-        {
-            driverService.CreateNewDriver(driver.FirstName, driver.LastName);
-            return Redirect("/");
-        }
+   
+        driverService.CreateNewDriver(id, driver.FirstName, driver.LastName);
+        return Redirect("Drivers");
 
-        return Redirect("/");
     }
 
 
-    [HttpGet("/Busses")]
+    [HttpDelete]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteDriver(int id)
+    {
+        driverService.DeleteDriver(id);
+        return RedirectToAction("Drivers");
+    }
+  
+
+    /*BUSSES*/
     public IActionResult Busses()
     {
         return View(busService.getAllBusses().Select(b => BusViewModel.FromBus(b)));
     }
 
-    [HttpGet("/Routes")]
+
+    public IActionResult UpdateBus([FromRoute] int id)
+    {
+        var busEditModel =  new EditBusModel();
+        var bus = busService.findBusById(id);
+
+        busEditModel = EditBusModel.FromBus(bus);
+        return View(busEditModel);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateBus(int id, [Bind("BusName")] EditBusModel bus)
+    {
+        busService.UpdateBusById(id, bus.BusName);
+        return RedirectToAction("Busses");
+    }
+
+    public IActionResult CreateBus()
+    {
+        var busCreateModel = BusCreateModel.NewBus(busService.GetAmountOfBusses());
+        return View(busCreateModel);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateBus(int id, [Bind("BusName")] BusCreateModel bus)
+    {
+        busService.CreateNewBus(id, bus.BusName);
+        return RedirectToAction("Busses");
+    }
+
+
+    /*ROUTES*/
+
     public IActionResult Routes()
     {
         return View(routeService.getAllRoutes().Select(r => RoutesViewModel.FromRoutes(r)));
     }
 
-    [HttpGet("/Stops")]
+
+    /*STOPS*/
     public IActionResult Stops()
     {
         return View(stopService.getAllStops().Select(s=>StopViewModel.FromStop(s)));
     }
 
- 
-    [HttpGet("/Loops")]
+    public IActionResult UpdateStop([FromRoute] int id)
+    {
+        var stopEditModel =  new StopEditModel();
+        var stop = stopService.findStopById(id);
+
+        stopEditModel = StopEditModel.FromStop(stop);
+        return View(stopEditModel);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateStop(int id, [Bind("Name")] StopEditModel stop)
+    {
+        stopService.UpdateStopById(id, stop.Name);
+        return RedirectToAction("Stops");
+    }
+
+
+    public IActionResult CreateStop()
+    {
+        var stopCreateModel = StopCreateModel.NewStop(stopService.GetAmountOfStops());
+        return View(stopCreateModel);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateStop(int id, [Bind("Name,Latitude,Longitude")] StopCreateModel stop)
+    {
+        stopService.CreateNewStop(id, stop.Name, stop.Latitude, stop.Longitude);
+        return RedirectToAction("Stops");
+    }
+
+
+
+    /*LOOPS*/
+
     public IActionResult Loops()
     {
         return View(loopService.getAllLoops().Select(l => LoopViewModel.FromLoop(l)));
     }
 
 
-    [HttpGet("Entries")]
     public IActionResult Entries()
     {
         return View(entryService.getAllEntries().Select(e => EntryViewModel.FromEntry(e)));

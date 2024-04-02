@@ -8,9 +8,11 @@ namespace BusShuttleManager.Services
 
         public Stop findStopById(int id);
 
-        public void UpdateStopById(int id, string name, double lat, double lon);
+        public void UpdateStopById(int id, string name);
 
-        public void CreateNewStop(string name, double lat, double lon);
+        public int GetAmountOfStops();
+
+        public void CreateNewStop(int id, string name, double lat, double lon);
     }
 
 }

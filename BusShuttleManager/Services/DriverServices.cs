@@ -4,17 +4,19 @@ namespace BusShuttleManager.Services
 {
     public class DriverServices : IDriverService
     {
-        private readonly DataContext db = new DataContext();
+        private DataContext db;
         List<Driver> drivers;
 
         public DriverServices()
         {
+            db = new DataContext();
             db.Add(new Driver{FirstName="Jack", LastName="Carthew"});
         }
 
 
         public List<Driver> getAllDrivers()
         {
+            db = new DataContext();
             drivers = db.Driver
                 .Select(d => new Driver(d.Id, d.FirstName, d.LastName)).ToList();
 
@@ -23,14 +25,19 @@ namespace BusShuttleManager.Services
 
         public Driver findDriverById(int id)
         {
+            db = new DataContext();
             var driver = db.Driver
-                .SingleOrDefault(driver =>driver.Id == id);
-
+                .SingleOrDefault(driver => driver.Id == id);
+            
+   
             return new Driver(driver);
+ 
         }
 
         public void UpdateDriverById(int id, string fName, string lName)
         {
+            db = new DataContext();
+            
             var existingDriver = db.Driver.SingleOrDefault(driver => driver.Id == id);
             existingDriver.Update(fName, lName);
 
@@ -45,11 +52,28 @@ namespace BusShuttleManager.Services
             }
         }
 
-        public void CreateNewDriver(string fName, string lName)
+        public int GetAmountOfDrivers() 
         {
-            var totalDrivers = db.Driver.Count();
-            db.Add(new Driver{Id=totalDrivers+1, FirstName=fName, LastName=lName});
+            db = new DataContext();
+            return db.Driver.Count();
+        }
+
+        public void CreateNewDriver(int id, string fName, string lName)
+        {
+            db = new DataContext();
+            db.Add(new Driver{Id=id, FirstName=fName, LastName=lName});
             db.SaveChanges();
+        }
+
+        public void DeleteDriver(int id)
+        {
+            db = new DataContext();
+            var driver = db.Driver.FirstOrDefault(d => d.Id == id);
+            if (driver != null)
+            {
+                db.Driver.Remove(driver);
+                db.SaveChanges(); 
+            }
         }
     }
 }

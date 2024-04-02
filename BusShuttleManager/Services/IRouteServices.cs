@@ -10,6 +10,8 @@ namespace BusShuttleManager.Services
 
         public void UpdateRouteById(int id, int order);
 
+        public int GetAmountOfRoutes();
+
         public void CreateNewRoute(int order);
     }
 

@@ -3,11 +3,12 @@ namespace BusShuttleManager.Services
 {
     public class StopServices : IStopService
     {
-        private readonly DataContext db = new DataContext();
+        private DataContext db;
         List<Stop> stops;
 
         public List<Stop> getAllStops()
         {
+            db = new DataContext();
             stops = db.Stop
                 .Select(s => new Stop(s.Id, s.Name, s.Latitude, s.Longitude)).ToList();
             return stops;
@@ -15,16 +16,18 @@ namespace BusShuttleManager.Services
 
         public Stop findStopById(int id)
         {
+            db = new DataContext();
             var stop = db.Stop
                 .SingleOrDefault(s =>s.Id == id);
 
             return new Stop(stop);
         }
 
-        public void UpdateStopById(int id, string name, double lat, double lon)
+        public void UpdateStopById(int id, string name)
         {
+            db = new DataContext();
             var existingStop = db.Stop.SingleOrDefault(stop => stop.Id == id);
-            existingStop.Update(name, lat, lon);
+            existingStop.Update(name);
 
             var stop = db.Stop
                 .SingleOrDefault(stop => stop.Id == existingStop.Id);
@@ -32,16 +35,20 @@ namespace BusShuttleManager.Services
             if(stop != null)
             {
                 stop.Name = name;
-                stop.Latitude = lat;
-                stop.Longitude = lon;
                 db.SaveChanges();
             }
         }
 
-        public void CreateNewStop(string name, double lat, double lon)
+        public int GetAmountOfStops()
         {
-            var totalStops = db.Stop.Count();
-            db.Add(new Stop{Id = totalStops+1, Name=name, Latitude=lat, Longitude=lon});
+            db = new DataContext();
+            return db.Stop.Count();
+        }
+
+        public void CreateNewStop(int id, string name, double lat, double lon)
+        {
+            db = new DataContext();
+            db.Add(new Stop{Id = id, Name=name, Latitude=lat, Longitude=lon});
             db.SaveChanges();
         }
     }

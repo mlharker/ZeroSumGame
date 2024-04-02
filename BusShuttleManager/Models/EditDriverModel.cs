@@ -6,7 +6,7 @@ using DomainModel;
 
 namespace BusShuttleManager.Models
 {
-    public class CreateDriverModel
+    public class EditDriverModel
     {
        
         public int Id {get; set;}
@@ -16,19 +16,14 @@ namespace BusShuttleManager.Models
 
         public string LastName {get; set;}
 
-        public string Username {get; set;}
 
-        public string Password {get; set;}
-
-        public static CreateDriverModel NewDriver(int amountOfDrivers)
+        public static EditDriverModel FromDriver(Driver driver)
         {
-            var newId = amountOfDrivers + 1;
-
-            return new CreateDriverModel
+            return new EditDriverModel
             {
-                Id = newId,
-                FirstName = "",
-                LastName = ""
+                Id = driver.Id,
+                FirstName = driver.FirstName,
+                LastName = driver.LastName
             };
         }
     }

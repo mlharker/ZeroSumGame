@@ -27,16 +27,16 @@
     </style>
 
 <div class="navbar">
-    <a href="/">Drivers</a>
-    <a href="/Busses">Busses</a>
-    <a href="/Routes">Routes</a>
-    <a href="/Stops">Stops</a>
-    <a href="/Loops">Loops</a>
+    <a asp-action="Drivers">Drivers</a>
+    <a asp-action="Busses">Busses</a>
+    <a asp-action="Routes">Routes</a>
+    <a asp-action="Stops">Stops</a>
+    <a asp-action="Loops">Loops</a>
 </div>
 
 
 <h2>Busses</h2>
-<button asp-action="Add Bus">Create new bus</button>
+<a asp-action="CreateBus">Create new bus</a>
 
 <table class="dataTable">
     <thead>
@@ -57,8 +57,8 @@
                     @Html.DisplayFor(modelItem => item.BusName)
                 </td>
                 <td>
-                    <button asp-action="Edit" asp-Routes-id="@item.Id">Edit</button> | <button asp-action="Delete" 
-                    asp-Routes-id="@item.Id">Delete</button>
+                    <a asp-action="UpdateBus" asp-route-id="@item.Id">Edit</a> | <a asp-action="DeleteBus" 
+                    asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

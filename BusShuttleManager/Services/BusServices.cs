@@ -3,16 +3,18 @@ namespace BusShuttleManager.Services
 {
     public class BusServices : IBusService
     {
-        private readonly DataContext db = new DataContext();
+        private DataContext db;
         List<Bus> busses;
 
         public BusServices()
-        {
+        { 
+            db = new DataContext();
             db.Add(new Bus{BusName="Bus1"});
         }
 
         public List<Bus> getAllBusses()
         {
+             db = new DataContext();
             busses = db.Bus
                 .Select(b => new Bus(b.Id, b.BusName)).ToList();
             return busses;
@@ -20,6 +22,7 @@ namespace BusShuttleManager.Services
 
         public Bus findBusById(int id)
         {
+            db = new DataContext();
             var bus = db.Bus
                 .SingleOrDefault(bus =>bus.Id == id);
 
@@ -28,6 +31,7 @@ namespace BusShuttleManager.Services
 
         public void UpdateBusById(int id, string name)
         {
+            db = new DataContext();
             var existingBus = db.Bus.SingleOrDefault(bus => bus.Id == id);
             existingBus.Update(name);
 
@@ -41,10 +45,16 @@ namespace BusShuttleManager.Services
             }
         }
 
-        public void CreateNewBus(string name)
+        public int GetAmountOfBusses()
         {
-            var totalBusses = db.Bus.Count();
-            db.Add(new Bus{Id=totalBusses+1, BusName=name});
+            db = new DataContext();
+            return db.Bus.Count();
+        }
+
+        public void CreateNewBus(int id, string name)
+        {
+            db = new DataContext();
+            db.Add(new Bus{Id=id, BusName=name});
             db.SaveChanges();
         }
     }
