@@ -1,0 +1,56 @@
+@model IEnumerable<BusShuttleManager.Models.EntryViewModel>
+@{
+    ViewData["Title"] = "Entries";
+}
+
+<h2>Entries</h2>
+<button asp-action="Add entry">Create new entry</button>
+
+<table class="dataTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Boarded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeftBehind)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.Id)
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.TimeStamp)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.Boarded)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.LeftBehind)
+                </td>
+            </tr>
+            <tr>
+                <button asp-action="Edit" asp-Routes-id="@item.Id">Edit</button> | <button asp-action="Delete" 
+                asp-Routes-id="@item.Id">Delete</button>
+            </tr>
+        }
+    </tbody>
+</table>
