@@ -61,26 +61,26 @@ public class ConnectFour implements Game<char[][], Integer>
         return board;
     }
 
-    private int getNextAvailableRow(int col, char[][] board)
+
+    public char[][] undo(int col, char[][] board)
     {
-        for (int row = board.length - 1; row >= 0; row--)
-        {
-            if (board[row][col] == ' ')
-            {
-                return row;
-            }
+        if (col < 0 || col >= board[0].length) {
+            // Invalid column index, do nothing and return the board as is
+            return board;
         }
-        return -1; // Column is full
-    }
 
+        // Find the lowest occupied row in the specified column
+        int row = findLowestOccupiedRow(col, board);
 
-    public char[][] undo(int[] position, char[][] board)
-    {
-        board[position[0]][position[1]] = ' ';
-        marked[position[0]][position[1]] = false;
-        switchTurn();
+        if (row != -1) {
+            // Clear the cell at the specified position
+            board[row][col] = ' ';
+            marked[row][col] = false;
+            switchTurn();
+        }
         return board;
     }
+
 
     public void switchTurn(){
         if(turn == Marks.R)
@@ -91,6 +91,139 @@ public class ConnectFour implements Game<char[][], Integer>
         {
             turn = Marks.R;
         }
+    }
+
+
+    public int utility(char[][] board)
+    {
+        //check rows
+        for(int row=0; row<6; row++)
+        {
+            int rowSum = 0;
+            for(int col=0; col<7; col++)
+            {
+                if(board[row][col] == Marks.R.toString().charAt(0))
+                {
+                    rowSum++;
+                }
+                else if(board[row][col] == Marks.B.toString().charAt(0))
+                {
+                    rowSum--;
+                }
+            }
+
+            if(rowSum == 4)
+            {
+                return 1;
+            }
+            else if(rowSum == -4)
+            {
+                return -1;
+            }
+        }
+
+
+        //check columns
+        for(int col=0; col<7; col++)
+        {
+            int colSum = 0;
+            for(int row=0; row<6; row++)
+            {
+                if(board[row][col] == Marks.R.toString().charAt(0))
+                {
+                    colSum++;
+                }
+                else if(board[row][col] == Marks.B.toString().charAt(0))
+                {
+                    colSum--;
+                }
+            }
+
+            if(colSum == 4)
+            {
+                return 1;
+            }
+            else if(colSum == -4)
+            {
+                return -1;
+            }
+        }
+
+
+        //check diagonal
+        int diaSum = 0;
+        for(int d=0; d<BOARD_SIZE; d++)
+        {
+            if(board[d][d] == Marks.R.toString().charAt(0))
+            {
+                diaSum++;
+            }
+            else if(board[d][d] == Marks.B.toString().charAt(0))
+            {
+                diaSum--;
+            }
+
+        }
+
+        if(diaSum == 4)
+        {
+            return 1;
+        }
+        if(diaSum == -4)
+        {
+            return -1;
+        }
+
+
+        diaSum = 0;
+        for(int d=0; d<BOARD_SIZE; d++)
+        {
+            if(board[d][BOARD_SIZE-1-d] == Marks.R.toString().charAt(0))
+            {
+                diaSum++;
+            }
+            else if(board[d][BOARD_SIZE-1-d] == Marks.B.toString().charAt(0))
+            {
+                diaSum--;
+            }
+        }
+
+        if(diaSum == 4)
+        {
+            return 1;
+        }
+        else if(diaSum == -4)
+        {
+            return -1;
+        }
+
+        return 0;
+    }
+
+
+    private int findLowestOccupiedRow(int col, char[][] board) {
+        // Iterate through the specified column from bottom to top
+        for (int row = board.length - 1; row >= 0; row--) {
+            if (board[row][col] != ' ') {
+                // Found the lowest occupied row
+                return row;
+            }
+        }
+        // Column is empty
+        return -1;
+    }
+
+
+    private int getNextAvailableRow(int col, char[][] board)
+    {
+        for (int row = board.length - 1; row >= 0; row--)
+        {
+            if (board[row][col] == ' ')
+            {
+                return row;
+            }
+        }
+        return -1; // Column is full
     }
 
 
