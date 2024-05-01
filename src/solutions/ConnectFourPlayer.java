@@ -11,7 +11,7 @@ public class ConnectFourPlayer extends MiniMax<char[][], Integer>
 
     public ConnectFourPlayer()
     {
-        super(new ConnectFour(ConnectFour.Marks.R), true);
+        super(new ConnectFour(ConnectFour.Marks.B), true);
     }
 
     public void printBoard()
