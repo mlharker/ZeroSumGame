@@ -8,7 +8,8 @@ public class MiniMax <S, A> {
     public record Best<A>(int value, A action){};
     public final boolean pruning;
 
-    public MiniMax(Game<S,A> game, boolean pruning){
+    public MiniMax(Game<S,A> game, boolean pruning)
+    {
         this.game = game;
         this.pruning = pruning;
     }
@@ -59,6 +60,7 @@ public class MiniMax <S, A> {
                     minAction = action;
                 }
                 game.undo(action, newState);
+                System.out.println(game.getBoard());
 
                 if (pruning && minValue <= alpha)
                     break;

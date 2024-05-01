@@ -1,5 +1,6 @@
 package problems;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectFour implements Game<char[][], Integer>
@@ -12,11 +13,11 @@ public class ConnectFour implements Game<char[][], Integer>
 
     public ConnectFour(Marks turn)
     {
-        this.board = new char[6][7];
-        this.marked = new boolean[6][7];
+        this.board = new char[4][5];
+        this.marked = new boolean[4][5];
         this.turn = turn;
-        for (int row = 0; row < 6; row++){
-            for(int col = 0; col < 7; col++){
+        for (int row = 0; row < 4; row++){
+            for(int col = 0; col < 5; col++){
                 board[row][col] = ' ';
                 marked[row][col] = false;
             }
@@ -31,9 +32,9 @@ public class ConnectFour implements Game<char[][], Integer>
             return true;
         }
 
-        for(int row=0; row<6; row++)
+        for(int row=0; row<4; row++)
         {
-            for(int col=0; col<7; col++)
+            for(int col=0; col<5; col++)
             {
                 if(!marked[row][col])
                 {
@@ -44,36 +45,35 @@ public class ConnectFour implements Game<char[][], Integer>
         return true;
     }
 
-    public char[][] execute(int col, char[][] board)
+    public char[][] execute(Integer col, char[][] board)
     {
         int row = getNextAvailableRow(col, board);
         if(turn == Marks.R)
         {
-            board[col][row] = Marks.R.toString().charAt(0);
+            board[row][col] = Marks.R.toString().charAt(0);
         }
         else
         {
-            board[col][row] = Marks.B.toString().charAt(0);
+            board[row][col] = Marks.B.toString().charAt(0);
         }
 
-        marked[col][board[0].length] = true;
+
+        marked[row][col] = true;
         switchTurn();
         return board;
     }
 
 
-    public char[][] undo(int col, char[][] board)
+    public char[][] undo(Integer col, char[][] board)
     {
-        if (col < 0 || col >= board[0].length) {
-            // Invalid column index, do nothing and return the board as is
+        if (col < 0 || col >= board[0].length)
+        {
             return board;
         }
 
-        // Find the lowest occupied row in the specified column
         int row = findLowestOccupiedRow(col, board);
 
         if (row != -1) {
-            // Clear the cell at the specified position
             board[row][col] = ' ';
             marked[row][col] = false;
             switchTurn();
@@ -97,10 +97,10 @@ public class ConnectFour implements Game<char[][], Integer>
     public int utility(char[][] board)
     {
         //check rows
-        for(int row=0; row<6; row++)
+        for(int row=0; row<4; row++)
         {
             int rowSum = 0;
-            for(int col=0; col<7; col++)
+            for(int col=0; col<5; col++)
             {
                 if(board[row][col] == Marks.R.toString().charAt(0))
                 {
@@ -124,10 +124,10 @@ public class ConnectFour implements Game<char[][], Integer>
 
 
         //check columns
-        for(int col=0; col<7; col++)
+        for(int col=0; col<4; col++)
         {
             int colSum = 0;
-            for(int row=0; row<6; row++)
+            for(int row=0; row<4; row++)
             {
                 if(board[row][col] == Marks.R.toString().charAt(0))
                 {
@@ -150,19 +150,25 @@ public class ConnectFour implements Game<char[][], Integer>
         }
 
 
-        //check diagonal
         int diaSum = 0;
-        for(int d=0; d<BOARD_SIZE; d++)
+        //check diagonal
+        for (int row = 0; row <= 0; row++)
         {
-            if(board[d][d] == Marks.R.toString().charAt(0))
+            for (int col = 0; col <= 1; col++)
             {
-                diaSum++;
+                diaSum = 0;
+                for (int d = 0; d < 4; d++)
+                {
+                    if (board[row + d][col + d] == Marks.R.toString().charAt(0))
+                    {
+                        diaSum++;
+                    }
+                    else if (board[row + d][col + d] == Marks.B.toString().charAt(0))
+                    {
+                        diaSum--;
+                    }
+                }
             }
-            else if(board[d][d] == Marks.B.toString().charAt(0))
-            {
-                diaSum--;
-            }
-
         }
 
         if(diaSum == 4)
@@ -176,15 +182,22 @@ public class ConnectFour implements Game<char[][], Integer>
 
 
         diaSum = 0;
-        for(int d=0; d<BOARD_SIZE; d++)
+        for (int row = 0; row <= 0; row++)
         {
-            if(board[d][BOARD_SIZE-1-d] == Marks.R.toString().charAt(0))
+            for (int col = 4; col < 5; col++)
             {
-                diaSum++;
-            }
-            else if(board[d][BOARD_SIZE-1-d] == Marks.B.toString().charAt(0))
-            {
-                diaSum--;
+                diaSum = 0;
+                for (int d = 0; d < 4; d++)
+                {
+                    if (board[row + d][col - d] == Marks.R.toString().charAt(0))
+                    {
+                        diaSum++;
+                    }
+                    else if (board[row + d][col - d] == Marks.B.toString().charAt(0))
+                    {
+                        diaSum--;
+                    }
+                }
             }
         }
 
@@ -198,6 +211,27 @@ public class ConnectFour implements Game<char[][], Integer>
         }
 
         return 0;
+    }
+
+
+    public List<Integer> actions(char[][] state)
+    {
+        List<Integer> possibleActions = new ArrayList<>();
+
+        // Iterate through each column to find empty slots
+        for (int col = 0; col < state[0].length; col++) {
+            if (state[0][col] == ' ') {
+                possibleActions.add(col); // Add column index to possible actions
+            }
+        }
+
+        return possibleActions;
+    }
+
+
+    public char[][] getBoard()
+    {
+        return this.board;
     }
 
 
@@ -225,9 +259,4 @@ public class ConnectFour implements Game<char[][], Integer>
         }
         return -1; // Column is full
     }
-
-
-
-
-
 }
