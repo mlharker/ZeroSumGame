@@ -35,11 +35,12 @@ public class ConnectFourPlayer extends MiniMax<char[][], Integer>
             Integer move = input.nextInt();
 
             char[][] updatedBoard = game.execute(move, game.getBoard());
-            Integer aiAction = minimaxSearch(updatedBoard);
-            if(aiAction != null)
+            if (game.isTerminal(updatedBoard))
             {
-                game.execute(aiAction, game.getBoard());
+                break;
             }
+            Integer aiAction = minimaxSearch(updatedBoard);
+            updatedBoard = game.execute(aiAction, updatedBoard);
         }
         while(!game.isTerminal(game.getBoard()));
 

@@ -2,6 +2,8 @@ package core_algorithms;
 
 import problems.Game;
 
+import java.util.List;
+
 public class MiniMax <S, A> {
     public Game<S,A> game;
 
@@ -27,6 +29,7 @@ public class MiniMax <S, A> {
         }else{
             for(A action : game.actions(state))
             {
+                A test = (A) game.actions(state);
                 S newState = game.execute(action, state);
                 Best<A> min = minValue(newState, alpha, beta);
                 if (min.value() > maxValue)
@@ -60,7 +63,6 @@ public class MiniMax <S, A> {
                     minAction = action;
                 }
                 game.undo(action, newState);
-                System.out.println(game.getBoard());
 
                 if (pruning && minValue <= alpha)
                     break;

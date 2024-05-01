@@ -71,7 +71,7 @@ public class ConnectFour implements Game<char[][], Integer>
             return board;
         }
 
-        int row = findLowestOccupiedRow(col, board);
+        int row = findTopRow(col, board);
 
         if (row != -1) {
             board[row][col] = ' ';
@@ -94,122 +94,56 @@ public class ConnectFour implements Game<char[][], Integer>
     }
 
 
-    public int utility(char[][] board)
-    {
-        //check rows
-        for(int row=0; row<4; row++)
-        {
-            int rowSum = 0;
-            for(int col=0; col<5; col++)
-            {
-                if(board[row][col] == Marks.R.toString().charAt(0))
-                {
-                    rowSum++;
-                }
-                else if(board[row][col] == Marks.B.toString().charAt(0))
-                {
-                    rowSum--;
-                }
-            }
+    public int utility(char[][] board) {
+        int rows = board.length;
+        int cols = board[0].length;
 
-            if(rowSum == 4)
-            {
-                return 1;
-            }
-            else if(rowSum == -4)
-            {
-                return -1;
-            }
-        }
-
-
-        //check columns
-        for(int col=0; col<4; col++)
-        {
-            int colSum = 0;
-            for(int row=0; row<4; row++)
-            {
-                if(board[row][col] == Marks.R.toString().charAt(0))
-                {
-                    colSum++;
-                }
-                else if(board[row][col] == Marks.B.toString().charAt(0))
-                {
-                    colSum--;
-                }
-            }
-
-            if(colSum == 4)
-            {
-                return 1;
-            }
-            else if(colSum == -4)
-            {
-                return -1;
-            }
-        }
-
-
-        int diaSum = 0;
-        //check diagonal
-        for (int row = 0; row <= 0; row++)
-        {
-            for (int col = 0; col <= 1; col++)
-            {
-                diaSum = 0;
-                for (int d = 0; d < 4; d++)
-                {
-                    if (board[row + d][col + d] == Marks.R.toString().charAt(0))
-                    {
-                        diaSum++;
-                    }
-                    else if (board[row + d][col + d] == Marks.B.toString().charAt(0))
-                    {
-                        diaSum--;
-                    }
+        // Check rows for a win
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j <= cols - 4; j++) {
+                if (board[i][j] != ' ' && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] && board[i][j] == board[i][j + 3]) {
+                    return board[i][j] == 'R' ? 1 : -1;
                 }
             }
         }
 
-        if(diaSum == 4)
-        {
-            return 1;
-        }
-        if(diaSum == -4)
-        {
-            return -1;
-        }
-
-
-        diaSum = 0;
-        for (int row = 0; row <= 0; row++)
-        {
-            for (int col = 4; col < 5; col++)
-            {
-                diaSum = 0;
-                for (int d = 0; d < 4; d++)
-                {
-                    if (board[row + d][col - d] == Marks.R.toString().charAt(0))
-                    {
-                        diaSum++;
-                    }
-                    else if (board[row + d][col - d] == Marks.B.toString().charAt(0))
-                    {
-                        diaSum--;
-                    }
+        // Check columns for a win
+        for (int i = 0; i <= rows - 4; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] != ' ' && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j] && board[i][j] == board[i + 3][j]) {
+                    return board[i][j] == 'R' ? 1 : -1;
                 }
             }
         }
 
-        if(diaSum == 4)
-        {
-            return 1;
-        }
-        else if(diaSum == -4)
-        {
-            return -1;
+        // Check diagonals for a win (bottom-left to top-right)
+        for (int i = 3; i < rows; i++) {
+            for (int j = 0; j <= cols - 4; j++) {
+                if (board[i][j] != ' ' && board[i][j] == board[i - 1][j + 1] && board[i][j] == board[i - 2][j + 2] && board[i][j] == board[i - 3][j + 3]) {
+                    return board[i][j] == 'R' ? 1 : -1;
+                }
+            }
         }
 
+        // Check diagonals for a win (top-left to bottom-right)
+        for (int i = 0; i <= rows - 4; i++) {
+            for (int j = 0; j <= cols - 4; j++) {
+                if (board[i][j] != ' ' && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] && board[i][j] == board[i + 3][j + 3]) {
+                    return board[i][j] == 'R' ? 1 : -1;
+                }
+            }
+        }
+
+        // If no winner and the board is full, return draw
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] == ' ') {
+                    return 0; // Game is not finished yet
+                }
+            }
+        }
+
+        // If no winner and the board is not full, return 0
         return 0;
     }
 
@@ -220,10 +154,15 @@ public class ConnectFour implements Game<char[][], Integer>
 
         // Iterate through each column to find empty slots
         for (int col = 0; col < state[0].length; col++) {
-            if (state[0][col] == ' ') {
-                possibleActions.add(col); // Add column index to possible actions
+            // Check from top to bottom in the column to find the first empty slot
+            for (int row = 0; row < state.length; row++) {
+                if (state[row][col] == ' ') {
+                    possibleActions.add(col); // Add column index to possible actions
+                    break; // Move to the next column after finding the first empty slot
+                }
             }
         }
+
 
         return possibleActions;
     }
@@ -235,16 +174,16 @@ public class ConnectFour implements Game<char[][], Integer>
     }
 
 
-    private int findLowestOccupiedRow(int col, char[][] board) {
-        // Iterate through the specified column from bottom to top
-        for (int row = board.length - 1; row >= 0; row--) {
+    private int findTopRow(int col, char[][] board) {
+        for (int row = 0; row < board.length; row++) {
             if (board[row][col] != ' ') {
-                // Found the lowest occupied row
+                // Found the topmost occupied row
                 return row;
             }
         }
         // Column is empty
         return -1;
+
     }
 
 
